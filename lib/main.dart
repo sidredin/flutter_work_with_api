@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +25,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final config = getConfig();
+
+  getProducts() async {
+    var url = Uri.parse('${config['apiUrl']}/products?page=1&per_page=10');
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${config['token']}',
+    });
+    print('Token : ${config['token']}');
+    print(response.body);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: null,
+        child: Text('Тут должны быть товары'),
       ),
     );
   }
